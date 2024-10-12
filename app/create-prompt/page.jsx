@@ -1,21 +1,22 @@
 "use client";
+
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Form from "@/components/Form";
 
+
 const CreatePrompt = () => {
-  const { data: session } = useSession();
   const router = useRouter();
-  const [submitting, setSubmitting] = useState(false);
-  const [post, setPost] = useState({
-    prompt: "",
-    tag: "",
-  });
+  const { data: session } = useSession();
+
+  const [submitting, setIsSubmitting] = useState(false);
+  const [post, setPost] = useState({ prompt: "", tag: "" });
 
   const createPrompt = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    setIsSubmitting(true);
+
     try {
       const response = await fetch("/api/prompt/new", {
         method: "POST",
@@ -25,27 +26,25 @@ const CreatePrompt = () => {
           tag: post.tag,
         }),
       });
+
       if (response.ok) {
         router.push("/");
-        console.log("Prompt created successfully");
       }
     } catch (error) {
-      console.log("Error while creating the prompt", error);
+      console.log(error);
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div>
-      <Form
-        type="Create"
-        handleSubmit={createPrompt}
-        submitting={submitting}
-        post={post}
-        setPost={setPost}
-      />
-    </div>
+    <Form
+      type="Create"
+      post={post}
+      setPost={setPost}
+      submitting={submitting}
+      handleSubmit={createPrompt}
+    />
   );
 };
 
