@@ -10,6 +10,7 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRETE,
   callbacks: {
     async session({ session }) {
       await connectToDb(); // Call the database connection here
